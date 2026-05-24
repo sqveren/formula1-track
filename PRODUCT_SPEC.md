@@ -1,212 +1,497 @@
-PRODUCT SPECIFICATION (PRD) — Formula Track
-1. Project Overview
+# PRODUCT SPECIFICATION (PRD) — Formula Track
 
-Formula Track is a data-driven web application designed for Formula 1 fans, analysts, and enthusiasts. The platform serves as a centralized dashboard where users can follow race weekends, including schedules, qualifying results, starting grids, sprint sessions, race results, and season standings in one structured interface.
+## 1. Project Overview
 
-The system aggregates Formula 1 data from external APIs and normalizes it into a consistent format for fast and reliable consumption across the frontend.
+Formula Track is a data-driven web application designed for Formula 1 fans and enthusiasts. The platform acts as a centralized dashboard where users can track Formula 1 race weekends, view session schedules, qualifying results, starting grids, race outcomes, and season standings in a structured interface.
 
-2. Core Problem & Solution
-Problem
+The application collects Formula 1 data from external APIs and transforms it into a consistent internal format to provide a clean and reliable experience across the frontend.
 
-Formula 1 data is fragmented across multiple platforms and official sources. Users must switch between different websites to track:
+---
 
-race calendars and schedules
-qualifying results
-starting grid formation
-sprint race outcomes
-final race results
-driver and constructor standings
+## 2. Core Problem & Solution
 
-Additionally, most official sources are not optimized for fast comparison or weekend-based navigation, making it difficult to follow an entire race weekend in a structured way.
+### Problem
 
-Solution
+Formula 1 information is usually distributed across multiple websites and platforms. Users often need to switch between different sources to find:
 
-Formula Track centralizes all Formula 1 weekend data into a single structured dashboard.
+- race schedules
+- qualifying results
+- starting grid positions
+- sprint race outcomes
+- race results
+- championship standings
 
-The application:
+Most available platforms also prioritize raw data presentation rather than providing a simple weekend-focused experience.
 
-aggregates race data from external APIs (Jolpica / OpenF1)
-normalizes session data into a unified format (Race Weekend model)
-provides a fast navigation system between race weekends
-displays structured race progression (Practice → Qualifying → Sprint → Race)
+---
 
-The goal is to allow users to understand a full race weekend in one place without switching sources.
+### Solution
 
-3. Target Audience & Roles
-Guest (Unauthenticated User)
+Formula Track centralizes Formula 1 data into one dashboard where users can easily navigate through race weekends and access all important information.
 
-Basic user who can explore F1 data without personalization features.
+The system will:
 
-Capabilities:
+- fetch Formula 1 data from external APIs
+- normalize raw API responses into an internal structure
+- provide fast navigation between race weekends
+- present sessions in chronological order
 
-View full F1 season calendar
-Browse race weekends (past and upcoming)
-View race schedules (practice, qualifying, sprint, race)
-View qualifying results and starting grid
-View sprint and race results
-View driver standings
-View constructor standings
-Registered User (Future Feature)
+Race weekend structure:
 
-A personalized user account with saved preferences.
+Practice → Qualifying → Sprint → Race
 
-Capabilities:
+The goal is to allow users to follow an entire Formula 1 weekend from one place.
 
-Save favorite drivers and teams
-Bookmark specific race weekends
-Receive optional notifications for race start times
-Customize dashboard layout (future enhancement)
-Admin (Future Feature)
+---
 
-System-level role for maintenance and configuration.
+## 3. Target Audience & Roles
+
+### Guest User
+
+Default user without authentication.
 
 Capabilities:
 
-Manage API integrations and keys
-Monitor backend logs and system health
-Configure caching strategy and data refresh intervals
-Manage database seeding and cleanup (if needed)
-4. Key Features (MVP)
-4.1 Race Weekend Explorer
+- View season calendar
+- Browse upcoming and previous race weekends
+- View session schedules
+- View qualifying results
+- View starting grid
+- View sprint results
+- View race results
+- View driver standings
+- View constructor standings
 
-Core feature of the application.
+---
 
-Display full Formula 1 season calendar
-Navigate between race weekends
-Each weekend contains structured sessions:
-Practice sessions (FP1, FP2, FP3)
-Qualifying
-Sprint (if applicable)
-Race
-Show session date, time, and circuit information
-4.2 Session Results Viewer
+### Registered User (Future Feature)
 
-Detailed results per session:
+Personalized user profile.
 
-Qualifying results (positions, lap times)
-Starting grid (official race start order)
-Sprint results (if applicable)
-Race results (final classification)
-4.3 Standings Dashboard
-Driver Championship standings
-Constructor Championship standings
-Points, positions, wins, podiums
-4.4 Navigation & UX
-Fast switching between race weekends
-Responsive layout (desktop + mobile)
-Loading states for API calls
-Error fallback screens (API unavailable, missing data)
-4.5 Backend Data Normalization Layer
+Capabilities:
 
-Backend transforms raw API data into a unified structure:
+- Save favorite drivers
+- Save favorite teams
+- Bookmark race weekends
+- Receive optional race reminders
+- Customize dashboard preferences
 
-RaceWeekend
-Session (Practice / Qualifying / Race / Sprint)
-Result entities
-Standings entities
+---
 
-This ensures frontend is independent from external API structure changes.
+### Admin (Future Feature)
 
-5. Technical Stack
-Frontend
-React
-TypeScript
-Tailwind CSS
-React Router
-Axios
-Context API (MVP state management)
-Backend
-Python
-FastAPI
-Pydantic (data validation)
-SQLAlchemy (ORM)
+Administrative role for application management.
+
+Capabilities:
+
+- Manage API configuration
+- Monitor backend logs
+- Configure caching settings
+- Manage database data
+
+---
+
+## 4. Key Features (MVP)
+
+### 4.1 Race Weekend Dashboard
+
+Main application feature.
+
+Display:
+
+- Grand Prix name
+- Circuit name
+- Country
+- Session schedule
+
+Sessions include:
+
+- Practice 1
+- Practice 2
+- Practice 3
+- Qualifying
+- Sprint (if available)
+- Race
+
+For each session display:
+
+- Session type
+- Date
+- Start time
+
+---
+
+### 4.2 Session Results Viewer
+
+Display detailed information for sessions:
+
+Qualifying:
+
+- Driver position
+- Driver name
+- Team
+- Lap time
+
+Race:
+
+- Final position
+- Driver
+- Team
+- Points
+
+Sprint:
+
+- Sprint result table (if available)
+
+Grid:
+
+- Official starting positions
+
+---
+
+### 4.3 Standings Dashboard
+
+Display:
+
+Driver standings:
+
+- Position
+- Driver
+- Team
+- Points
+- Wins
+
+Constructor standings:
+
+- Position
+- Team
+- Points
+
+---
+
+### 4.4 User Experience Features
+
+- Responsive design for desktop and mobile
+- Fast navigation between race weekends
+- Loading indicators
+- Error handling states
+- Empty state handling
+
+---
+
+### 4.5 Backend Data Processing Layer
 
 Backend responsibilities:
 
-Fetch F1 data from external API
-Normalize and structure race weekend data
-Provide REST API endpoints to frontend
-Cache frequently requested data (calendar, standings)
-External API
+- Fetch data from external APIs
+- Normalize raw API responses
+- Structure data into application models
+- Return clean JSON responses
 
-Primary:
+Frontend must never consume raw external API responses directly.
 
-Jolpica F1 API (Ergast successor)
+---
 
-Alternative fallback:
+## 5. Technical Stack
 
-OpenF1 API
-Database
-PostgreSQL
+### Frontend
 
-Used for:
+- React
+- TypeScript
+- Tailwind CSS
+- React Router
+- Axios
+- React Context API
 
-caching race weekend data
-storing normalized session results
-optional user data (future)
-6. Data Model Concept (High-Level)
+Frontend responsibilities:
+
+- Display dashboard UI
+- Consume backend API endpoints
+- Manage application state
+- Handle loading and error states
+
+---
+
+### Backend
+
+- Python
+- FastAPI
+- Pydantic
+- SQLAlchemy
+
+Backend responsibilities:
+
+- Fetch Formula 1 data from APIs
+- Normalize responses
+- Provide REST endpoints
+- Cache frequently used data
+
+---
+
+### External API
+
+Primary API:
+
+- Jolpica F1 API
+
+Alternative API:
+
+- OpenF1 API
+
+---
+
+### Database
+
+- PostgreSQL
+
+Database usage:
+
+- Cache race information
+- Store normalized data
+- Store future user data
+
+---
+
+## 6. High-Level Data Models
 
 Core entities:
 
-RaceWeekend
-Circuit
-Session (Practice / Qualifying / Sprint / Race)
-Driver
-Constructor
-Result
-StandingEntry
-7. System Architecture Notes
-Frontend Architecture
-Feature-based structure (pages, components, services)
-API service layer (isolated Axios calls)
-Separation between UI and data logic
-Reusable components for tables, cards, and session views
-Backend Architecture
-Service-based structure (no heavy frameworks needed)
-Separation of layers:
-routes/ → HTTP endpoints
-services/ → business logic
-models/ → DB entities
-schemas/ → API DTOs
-External API integration isolated in service layer
-Response normalization before sending to frontend
-8. Data Strategy
-External API is primary data source
-Backend acts as a caching + normalization layer
-Frequently accessed data:
-season calendar
-standings
-Cached to reduce API calls and improve performance
-9. MVP Scope Limitation
+### RaceWeekend
 
-Not included in MVP:
+Properties:
 
-Live telemetry (real-time tracking)
-Tire strategy analysis
-GPS car tracking
-User authentication system
-Social features (comments, sharing)
-Push notifications
+- id
+- grandPrixName
+- circuitName
+- country
+- sessions[]
 
-These features are considered Phase 2+ enhancements.
+---
 
+### Session
 
+Properties:
 
+- id
+- type
+- date
+- startTime
 
+---
 
+### Driver
 
+Properties:
 
+- id
+- fullName
+- team
+- nationality
 
+---
 
+### Result
 
-"" 10. AI Development Guidelines
+Properties:
 
-When generating code for this project, follow:
+- position
+- driver
+- team
+- points
+- lapTime
 
-Keep backend logic in FastAPI service layer (no logic in routes)
-Always return structured JSON responses
-Frontend must never depend on raw external API format
-Use strict TypeScript types for all API responses
-Avoid hardcoded session logic in frontend
-Prefer reusable components over page-specific UI
-Keep API layer isolated (services/api.ts pattern)  ""
+---
+
+### StandingEntry
+
+Properties:
+
+- position
+- name
+- team
+- points
+- wins
+
+---
+
+## 7. System Architecture Notes
+
+### Frontend Structure
+
+Feature-based architecture:
+
+```text
+src/
+├── components/
+├── pages/
+├── services/
+├── context/
+├── hooks/
+├── types/
+├── assets/
+└── App.tsx
+```
+
+Responsibilities:
+
+- reusable UI components
+- isolated API communication layer
+- strict TypeScript interfaces
+
+---
+
+### Backend Structure
+
+```text
+backend/
+├── app/
+│   ├── routes/
+│   ├── services/
+│   ├── models/
+│   ├── schemas/
+│   └── main.py
+```
+
+Responsibilities:
+
+routes/
+
+- API endpoints
+
+services/
+
+- business logic
+- API integration
+
+models/
+
+- database entities
+
+schemas/
+
+- request and response models
+
+---
+
+## 8. Data Strategy
+
+Application data flow:
+
+External API → FastAPI → Data Normalization → PostgreSQL Cache → Frontend
+
+Frequently requested data:
+
+- season calendar
+- standings
+- upcoming race weekend
+
+should be cached to reduce API requests.
+
+---
+
+## 9. MVP Scope Limitations
+
+The following features are not included in MVP:
+
+- live telemetry
+- live timing
+- tire strategy analysis
+- GPS car tracking
+- authentication system
+- social features
+- notifications
+- advanced analytics
+
+These features may be implemented in future versions.
+
+---
+
+## 10. AI Development Guidelines
+
+When generating code for this project, follow these rules:
+
+### Backend Rules
+
+- Keep business logic inside service layer
+- Keep routes/controllers minimal
+- Do not expose raw external API responses directly
+- Always return structured JSON responses
+- Normalize external API data before sending to frontend
+- Avoid hardcoded session handling logic
+
+Backend responsibilities:
+
+- Fetch Formula 1 data from external APIs
+- Normalize raw responses
+- Return consistent response structures
+- Cache frequently requested data
+
+---
+
+### Internal Application Models
+
+AI should create and use the following internal models:
+
+RaceWeekend:
+
+- id
+- grandPrixName
+- circuitName
+- country
+- sessions[]
+
+Session:
+
+- id
+- name
+- date
+- startTime
+
+QualifyingResult:
+
+- position
+- driver
+- team
+- lapTime
+
+RaceResult:
+
+- position
+- driver
+- team
+- points
+
+StandingEntry:
+
+- position
+- name
+- team
+- points
+- wins
+
+---
+
+### Frontend Rules
+
+- Use reusable components
+- Keep API requests isolated inside services/api.ts
+- Use strict TypeScript interfaces
+- Do not depend on raw API structure
+- Prefer reusable UI over page-specific components
+
+Required UI components:
+
+- RaceWeekendCard
+- SessionCard
+- QualifyingTable
+- RaceResultsTable
+- StandingsTable
+
+Frontend must:
+
+- Display session schedule cards
+- Display qualifying results
+- Display standings tables
+- Handle loading states
+- Handle error states
+- Handle empty states
