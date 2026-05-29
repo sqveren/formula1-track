@@ -5,21 +5,21 @@ from app.schemas.race import GridPosition, QualifyingResult, RaceResult
 JOLPICA_BASE_URL = "https://api.jolpi.ca/ergast/f1"
 
 
-async def get_latest_qualifying_results() -> list[QualifyingResult]:
+async def get_qualifying() -> list[QualifyingResult]:
     data = await _fetch_jolpica_data("/current/last/qualifying")
     qualifying_results = _extract_results(data, "QualifyingResults")
 
     return [_map_qualifying_result(result) for result in qualifying_results]
 
 
-async def get_latest_grid() -> list[GridPosition]:
+async def get_grid() -> list[GridPosition]:
     data = await _fetch_jolpica_data("/current/last/grid")
     grid_positions = _extract_results(data, "GridPositions")
 
     return [_map_grid_position(position) for position in grid_positions]
 
 
-async def get_latest_race_results() -> list[RaceResult]:
+async def get_race_results() -> list[RaceResult]:
     data = await _fetch_jolpica_data("/current/last/results")
     race_results = _extract_results(data, "Results")
 
@@ -71,7 +71,7 @@ def _map_race_result(result: dict) -> RaceResult:
         position=_to_int(result.get("position")),
         driver=_map_driver_name(result),
         team=_map_team_name(result),
-        points=_to_float(result.get("points")),
+        points=_to_int(result.get("points")),
     )
 
 
@@ -93,10 +93,4 @@ def _to_int(value: str | int | None) -> int:
 
     return int(value)
 
-
-def _to_float(value: str | int | float | None) -> float:
-    if value is None:
-        return 0
-
-    return float(value)
 
