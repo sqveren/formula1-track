@@ -16,7 +16,10 @@ import {
   type RaceWeekend,
 } from "../services/api";
 
+type DashboardTab = "upcoming" | "recent" | "standings";
+
 function DashboardPage() {
+  const [activeTab, setActiveTab] = useState<DashboardTab>("upcoming");
   const [weekend, setWeekend] = useState<RaceWeekend | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -104,112 +107,175 @@ function DashboardPage() {
         </div>
       </header>
 
-      <div className="mx-auto grid w-full max-w-6xl gap-6 px-4 py-6 sm:px-6 lg:grid-cols-[1.2fr_0.8fr] lg:px-8">
-        <section className="rounded-lg border border-slate-800 bg-slate-900 p-5">
-          <h2 className="text-lg font-semibold">Upcoming Race</h2>
-          <div className="mt-5">
-            {isLoading ? (
-              <div className="min-h-48 rounded-lg border border-slate-800 bg-slate-950 p-5 text-slate-300">
-                Loading race weekend...
-              </div>
-            ) : error ? (
-              <div className="min-h-48 rounded-lg border border-red-900 bg-red-950/40 p-5 text-red-200">
-                {error}
-              </div>
-            ) : weekend ? (
-              <RaceWeekendCard weekend={weekend} />
-            ) : (
-              <div className="min-h-48 rounded-lg border border-slate-800 bg-slate-950 p-5 text-slate-300">
-                No race weekend data available.
-              </div>
-            )}
-          </div>
-        </section>
+      <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
+        <div className="flex flex-col gap-3 border-b border-slate-800 pb-4 sm:flex-row">
+          <button
+            type="button"
+            onClick={() => setActiveTab("upcoming")}
+            className={`rounded-md px-4 py-2 text-sm font-medium ${
+              activeTab === "upcoming"
+                ? "bg-slate-100 text-slate-950"
+                : "bg-slate-900 text-slate-300 hover:bg-slate-800"
+            }`}
+          >
+            Upcoming Race
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab("recent")}
+            className={`rounded-md px-4 py-2 text-sm font-medium ${
+              activeTab === "recent"
+                ? "bg-slate-100 text-slate-950"
+                : "bg-slate-900 text-slate-300 hover:bg-slate-800"
+            }`}
+          >
+            Live / Recent
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab("standings")}
+            className={`rounded-md px-4 py-2 text-sm font-medium ${
+              activeTab === "standings"
+                ? "bg-slate-100 text-slate-950"
+                : "bg-slate-900 text-slate-300 hover:bg-slate-800"
+            }`}
+          >
+            Standings
+          </button>
+        </div>
 
-        <section className="rounded-lg border border-slate-800 bg-slate-900 p-5">
-          <h2 className="text-lg font-semibold">Session Schedule</h2>
-          <div className="mt-5 grid gap-3">
-            {isLoading ? (
-              <div className="rounded-lg border border-slate-800 bg-slate-950 p-4 text-slate-300">
-                Loading sessions...
-              </div>
-            ) : error ? (
-              <div className="rounded-lg border border-red-900 bg-red-950/40 p-4 text-red-200">
-                {error}
-              </div>
-            ) : weekend && weekend.sessions.length > 0 ? (
-              weekend.sessions.map((session) => (
-                <SessionCard
-                  key={`${session.name}-${session.date}-${session.startTime}`}
-                  session={session}
-                />
-              ))
-            ) : (
-              <div className="rounded-lg border border-slate-800 bg-slate-950 p-4 text-slate-300">
-                No sessions available.
-              </div>
-            )}
-          </div>
-        </section>
-        <section className="rounded-lg border border-slate-800 bg-slate-900 p-5 lg:col-span-2">
-          <h2 className="text-lg font-semibold">Live / Recent</h2>
-          <div className="mt-5 grid gap-6">
-            {isRecentLoading ? (
-              <div className="rounded-lg border border-slate-800 bg-slate-950 p-5 text-slate-300">
-                Loading recent session data...
-              </div>
-            ) : recentError ? (
-              <div className="rounded-lg border border-red-900 bg-red-950/40 p-5 text-red-200">
-                {recentError}
-              </div>
-            ) : (
-              <>
-                <section>
-                  <h3 className="text-base font-semibold text-white">
-                    Qualifying
-                  </h3>
-                  <div className="mt-3">
-                    {qualifyingResults.length > 0 ? (
-                      <QualifyingTable results={qualifyingResults} />
-                    ) : (
-                      <div className="rounded-lg border border-slate-800 bg-slate-950 p-5 text-slate-300">
-                        No qualifying results available.
-                      </div>
-                    )}
+        {activeTab === "upcoming" ? (
+          <div className="mt-6 grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+            <section className="rounded-lg border border-slate-800 bg-slate-900 p-5">
+              <h2 className="text-lg font-semibold">Upcoming Race</h2>
+              <div className="mt-5">
+                {isLoading ? (
+                  <div className="min-h-48 rounded-lg border border-slate-800 bg-slate-950 p-5 text-slate-300">
+                    Loading race weekend...
                   </div>
-                </section>
+                ) : error ? (
+                  <div className="min-h-48 rounded-lg border border-red-900 bg-red-950/40 p-5 text-red-200">
+                    {error}
+                  </div>
+                ) : weekend ? (
+                  <RaceWeekendCard weekend={weekend} />
+                ) : (
+                  <div className="min-h-48 rounded-lg border border-slate-800 bg-slate-950 p-5 text-slate-300">
+                    No race weekend data available.
+                  </div>
+                )}
+              </div>
+            </section>
 
-                <section>
-                  <h3 className="text-base font-semibold text-white">Grid</h3>
-                  <div className="mt-3">
-                    {gridPositions.length > 0 ? (
-                      <GridTable positions={gridPositions} />
-                    ) : (
-                      <div className="rounded-lg border border-slate-800 bg-slate-950 p-5 text-slate-300">
-                        No grid positions available.
-                      </div>
-                    )}
+            <section className="rounded-lg border border-slate-800 bg-slate-900 p-5">
+              <h2 className="text-lg font-semibold">Session Schedule</h2>
+              <div className="mt-5 grid gap-3">
+                {isLoading ? (
+                  <div className="rounded-lg border border-slate-800 bg-slate-950 p-4 text-slate-300">
+                    Loading sessions...
                   </div>
-                </section>
-
-                <section>
-                  <h3 className="text-base font-semibold text-white">
-                    Results
-                  </h3>
-                  <div className="mt-3">
-                    {raceResults.length > 0 ? (
-                      <RaceResultsTable results={raceResults} />
-                    ) : (
-                      <div className="rounded-lg border border-slate-800 bg-slate-950 p-5 text-slate-300">
-                        No race results available.
-                      </div>
-                    )}
+                ) : error ? (
+                  <div className="rounded-lg border border-red-900 bg-red-950/40 p-4 text-red-200">
+                    {error}
                   </div>
-                </section>
-              </>
-            )}
+                ) : weekend && weekend.sessions.length > 0 ? (
+                  weekend.sessions.map((session) => (
+                    <SessionCard
+                      key={`${session.name}-${session.date}-${session.startTime}`}
+                      session={session}
+                    />
+                  ))
+                ) : (
+                  <div className="rounded-lg border border-slate-800 bg-slate-950 p-4 text-slate-300">
+                    No sessions available.
+                  </div>
+                )}
+              </div>
+            </section>
           </div>
-        </section>
+        ) : null}
+
+        {activeTab === "recent" ? (
+          <section className="mt-6 rounded-lg border border-slate-800 bg-slate-900 p-5">
+            <h2 className="text-lg font-semibold">Live / Recent</h2>
+            <div className="mt-5 grid gap-6">
+              {isRecentLoading ? (
+                <div className="rounded-lg border border-slate-800 bg-slate-950 p-5 text-slate-300">
+                  Loading recent session data...
+                </div>
+              ) : recentError ? (
+                <div className="rounded-lg border border-red-900 bg-red-950/40 p-5 text-red-200">
+                  {recentError}
+                </div>
+              ) : (
+                <>
+                  <section>
+                    <h3 className="text-base font-semibold text-white">
+                      Qualifying
+                    </h3>
+                    <div className="mt-3">
+                      {qualifyingResults.length > 0 ? (
+                        <QualifyingTable results={qualifyingResults} />
+                      ) : (
+                        <div className="rounded-lg border border-slate-800 bg-slate-950 p-5 text-slate-300">
+                          No qualifying results available.
+                        </div>
+                      )}
+                    </div>
+                  </section>
+
+                  <section>
+                    <h3 className="text-base font-semibold text-white">
+                      Grid
+                    </h3>
+                    <div className="mt-3">
+                      {gridPositions.length > 0 ? (
+                        <GridTable positions={gridPositions} />
+                      ) : (
+                        <div className="rounded-lg border border-slate-800 bg-slate-950 p-5 text-slate-300">
+                          No grid positions available.
+                        </div>
+                      )}
+                    </div>
+                  </section>
+
+                  <section>
+                    <h3 className="text-base font-semibold text-white">
+                      Results
+                    </h3>
+                    <div className="mt-3">
+                      {raceResults.length > 0 ? (
+                        <RaceResultsTable results={raceResults} />
+                      ) : (
+                        <div className="rounded-lg border border-slate-800 bg-slate-950 p-5 text-slate-300">
+                          No race results available.
+                        </div>
+                      )}
+                    </div>
+                  </section>
+                </>
+              )}
+            </div>
+          </section>
+        ) : null}
+
+        {activeTab === "standings" ? (
+          <div className="mt-6 grid gap-6 lg:grid-cols-2">
+            <section className="rounded-lg border border-slate-800 bg-slate-900 p-5">
+              <h2 className="text-lg font-semibold">Driver Standings</h2>
+              <div className="mt-5 rounded-lg border border-slate-800 bg-slate-950 p-5 text-slate-300">
+                Coming soon
+              </div>
+            </section>
+
+            <section className="rounded-lg border border-slate-800 bg-slate-900 p-5">
+              <h2 className="text-lg font-semibold">Constructor Standings</h2>
+              <div className="mt-5 rounded-lg border border-slate-800 bg-slate-950 p-5 text-slate-300">
+                Coming soon
+              </div>
+            </section>
+          </div>
+        ) : null}
       </div>
     </main>
   );
