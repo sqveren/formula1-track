@@ -1,53 +1,52 @@
 import type { QualifyingResult } from "../services/api";
+import Table, { type TableColumn } from "./Table";
 
 interface QualifyingTableProps {
   results: QualifyingResult[];
 }
 
+const columns: TableColumn<QualifyingResult>[] = [
+  {
+    key: "position",
+    header: "Position",
+    render: (result) => result.position,
+    className: "font-medium",
+  },
+  {
+    key: "driver",
+    header: "Driver",
+    render: (result) => result.driver,
+  },
+  {
+    key: "team",
+    header: "Team",
+    render: (result) => result.team,
+    className: "text-slate-300",
+  },
+  {
+    key: "q1",
+    header: "Q1",
+    render: (result) => result.q1,
+  },
+  {
+    key: "q2",
+    header: "Q2",
+    render: (result) => result.q2,
+  },
+  {
+    key: "q3",
+    header: "Q3",
+    render: (result) => result.q3,
+  },
+];
+
 function QualifyingTable({ results }: QualifyingTableProps) {
   return (
-    <div className="overflow-x-auto rounded-lg border border-slate-800 bg-slate-950">
-      <table className="min-w-full divide-y divide-slate-800 text-left text-sm">
-        <thead className="bg-slate-900 text-xs uppercase text-slate-400">
-          <tr>
-            <th scope="col" className="px-4 py-3 font-semibold">
-              Position
-            </th>
-            <th scope="col" className="px-4 py-3 font-semibold">
-              Driver
-            </th>
-            <th scope="col" className="px-4 py-3 font-semibold">
-              Team
-            </th>
-            <th scope="col" className="px-4 py-3 font-semibold">
-              Q1
-            </th>
-            <th scope="col" className="px-4 py-3 font-semibold">
-              Q2
-            </th>
-            <th scope="col" className="px-4 py-3 font-semibold">
-              Q3
-            </th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-slate-800 text-slate-100">
-          {results.map((result) => (
-            <tr key={`${result.position}-${result.driver}`}>
-              <td className="whitespace-nowrap px-4 py-3 font-medium">
-                {result.position}
-              </td>
-              <td className="whitespace-nowrap px-4 py-3">{result.driver}</td>
-              <td className="whitespace-nowrap px-4 py-3 text-slate-300">
-                {result.team}
-              </td>
-              <td className="whitespace-nowrap px-4 py-3">{result.q1}</td>
-              <td className="whitespace-nowrap px-4 py-3">{result.q2}</td>
-              <td className="whitespace-nowrap px-4 py-3">{result.q3}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <Table
+      columns={columns}
+      rows={results}
+      getRowKey={(result) => `${result.position}-${result.driver}`}
+    />
   );
 }
 
