@@ -1,4 +1,44 @@
+import { useEffect, useState } from "react";
+
+import RaceWeekendCard from "../components/RaceWeekendCard";
+import SessionCard from "../components/SessionCard";
+import { getWeekend, type RaceWeekend } from "../services/api";
+
 function DashboardPage() {
+  const [weekend, setWeekend] = useState<RaceWeekend | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let isActive = true;
+
+    async function loadWeekend() {
+      try {
+        setIsLoading(true);
+        setError(null);
+        const weekendData = await getWeekend();
+
+        if (isActive) {
+          setWeekend(weekendData);
+        }
+      } catch {
+        if (isActive) {
+          setError("Unable to load race weekend data.");
+        }
+      } finally {
+        if (isActive) {
+          setIsLoading(false);
+        }
+      }
+    }
+
+    loadWeekend();
+
+    return () => {
+      isActive = false;
+    };
+  }, []);
+
   return (
     <main className="min-h-screen bg-slate-950 text-slate-100">
       <header className="border-b border-slate-800 bg-slate-950/95">
@@ -12,15 +52,48 @@ function DashboardPage() {
       <div className="mx-auto grid w-full max-w-6xl gap-6 px-4 py-6 sm:px-6 lg:grid-cols-[1.2fr_0.8fr] lg:px-8">
         <section className="rounded-lg border border-slate-800 bg-slate-900 p-5">
           <h2 className="text-lg font-semibold">Race Weekend</h2>
-          <div className="mt-5 min-h-48 rounded-md border border-dashed border-slate-700 bg-slate-950" />
+          <div className="mt-5">
+            {isLoading ? (
+              <div className="min-h-48 rounded-lg border border-slate-800 bg-slate-950 p-5 text-slate-300">
+                Loading race weekend...
+              </div>
+            ) : error ? (
+              <div className="min-h-48 rounded-lg border border-red-900 bg-red-950/40 p-5 text-red-200">
+                {error}
+              </div>
+            ) : weekend ? (
+              <RaceWeekendCard weekend={weekend} />
+            ) : (
+              <div className="min-h-48 rounded-lg border border-slate-800 bg-slate-950 p-5 text-slate-300">
+                No race weekend data available.
+              </div>
+            )}
+          </div>
         </section>
 
         <section className="rounded-lg border border-slate-800 bg-slate-900 p-5">
           <h2 className="text-lg font-semibold">Session Schedule</h2>
           <div className="mt-5 grid gap-3">
-            <div className="h-16 rounded-md border border-dashed border-slate-700 bg-slate-950" />
-            <div className="h-16 rounded-md border border-dashed border-slate-700 bg-slate-950" />
-            <div className="h-16 rounded-md border border-dashed border-slate-700 bg-slate-950" />
+            {isLoading ? (
+              <div className="rounded-lg border border-slate-800 bg-slate-950 p-4 text-slate-300">
+                Loading sessions...
+              </div>
+            ) : error ? (
+              <div className="rounded-lg border border-red-900 bg-red-950/40 p-4 text-red-200">
+                {error}
+              </div>
+            ) : weekend && weekend.sessions.length > 0 ? (
+              weekend.sessions.map((session) => (
+                <SessionCard
+                  key={`${session.name}-${session.date}-${session.startTime}`}
+                  session={session}
+                />
+              ))
+            ) : (
+              <div className="rounded-lg border border-slate-800 bg-slate-950 p-4 text-slate-300">
+                No sessions available.
+              </div>
+            )}
           </div>
         </section>
 
