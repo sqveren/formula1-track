@@ -1,9 +1,11 @@
 import { Route, Routes } from "react-router-dom";
 
+import DashboardPage from "./pages/DashboardPage";
+
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<main className="min-h-screen bg-slate-950" />} />
+      <Route path="/" element={<DashboardPage />} />
     </Routes>
   );
 }
