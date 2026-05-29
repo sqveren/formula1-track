@@ -1,13 +1,24 @@
 import { useEffect, useState } from "react";
 
+import QualifyingTable from "../components/QualifyingTable";
 import RaceWeekendCard from "../components/RaceWeekendCard";
 import SessionCard from "../components/SessionCard";
-import { getWeekend, type RaceWeekend } from "../services/api";
+import {
+  getQualifying,
+  getWeekend,
+  type QualifyingResult,
+  type RaceWeekend,
+} from "../services/api";
 
 function DashboardPage() {
   const [weekend, setWeekend] = useState<RaceWeekend | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [qualifyingResults, setQualifyingResults] = useState<
+    QualifyingResult[]
+  >([]);
+  const [isQualifyingLoading, setIsQualifyingLoading] = useState(true);
+  const [qualifyingError, setQualifyingError] = useState<string | null>(null);
 
   useEffect(() => {
     let isActive = true;
@@ -33,6 +44,36 @@ function DashboardPage() {
     }
 
     loadWeekend();
+
+    return () => {
+      isActive = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let isActive = true;
+
+    async function loadQualifying() {
+      try {
+        setIsQualifyingLoading(true);
+        setQualifyingError(null);
+        const results = await getQualifying();
+
+        if (isActive) {
+          setQualifyingResults(results);
+        }
+      } catch {
+        if (isActive) {
+          setQualifyingError("Unable to load qualifying results.");
+        }
+      } finally {
+        if (isActive) {
+          setIsQualifyingLoading(false);
+        }
+      }
+    }
+
+    loadQualifying();
 
     return () => {
       isActive = false;
@@ -98,11 +139,23 @@ function DashboardPage() {
         </section>
 
         <section className="rounded-lg border border-slate-800 bg-slate-900 p-5 lg:col-span-2">
-          <h2 className="text-lg font-semibold">Session Results</h2>
-          <div className="mt-5 grid gap-4 md:grid-cols-3">
-            <div className="h-40 rounded-md border border-dashed border-slate-700 bg-slate-950" />
-            <div className="h-40 rounded-md border border-dashed border-slate-700 bg-slate-950" />
-            <div className="h-40 rounded-md border border-dashed border-slate-700 bg-slate-950" />
+          <h2 className="text-lg font-semibold">Qualifying Results</h2>
+          <div className="mt-5">
+            {isQualifyingLoading ? (
+              <div className="rounded-lg border border-slate-800 bg-slate-950 p-5 text-slate-300">
+                Loading qualifying results...
+              </div>
+            ) : qualifyingError ? (
+              <div className="rounded-lg border border-red-900 bg-red-950/40 p-5 text-red-200">
+                {qualifyingError}
+              </div>
+            ) : qualifyingResults.length > 0 ? (
+              <QualifyingTable results={qualifyingResults} />
+            ) : (
+              <div className="rounded-lg border border-slate-800 bg-slate-950 p-5 text-slate-300">
+                No qualifying results available.
+              </div>
+            )}
           </div>
         </section>
       </div>
