@@ -1,12 +1,18 @@
 import { useEffect, useState } from "react";
 
+import GridTable from "../components/GridTable";
 import QualifyingTable from "../components/QualifyingTable";
+import RaceResultsTable from "../components/RaceResultsTable";
 import RaceWeekendCard from "../components/RaceWeekendCard";
 import SessionCard from "../components/SessionCard";
 import {
+  getGrid,
   getQualifying,
+  getResults,
   getWeekend,
+  type GridPosition,
   type QualifyingResult,
+  type RaceResult,
   type RaceWeekend,
 } from "../services/api";
 
@@ -19,6 +25,10 @@ function DashboardPage() {
   >([]);
   const [isQualifyingLoading, setIsQualifyingLoading] = useState(true);
   const [qualifyingError, setQualifyingError] = useState<string | null>(null);
+  const [gridPositions, setGridPositions] = useState<GridPosition[]>([]);
+  const [raceResults, setRaceResults] = useState<RaceResult[]>([]);
+  const [isRaceDataLoading, setIsRaceDataLoading] = useState(true);
+  const [raceDataError, setRaceDataError] = useState<string | null>(null);
 
   useEffect(() => {
     let isActive = true;
@@ -44,6 +54,40 @@ function DashboardPage() {
     }
 
     loadWeekend();
+
+    return () => {
+      isActive = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let isActive = true;
+
+    async function loadRaceData() {
+      try {
+        setIsRaceDataLoading(true);
+        setRaceDataError(null);
+        const [gridData, resultsData] = await Promise.all([
+          getGrid(),
+          getResults(),
+        ]);
+
+        if (isActive) {
+          setGridPositions(gridData);
+          setRaceResults(resultsData);
+        }
+      } catch {
+        if (isActive) {
+          setRaceDataError("Unable to load grid and race results.");
+        }
+      } finally {
+        if (isActive) {
+          setIsRaceDataLoading(false);
+        }
+      }
+    }
+
+    loadRaceData();
 
     return () => {
       isActive = false;
@@ -154,6 +198,48 @@ function DashboardPage() {
             ) : (
               <div className="rounded-lg border border-slate-800 bg-slate-950 p-5 text-slate-300">
                 No qualifying results available.
+              </div>
+            )}
+          </div>
+        </section>
+
+        <section className="rounded-lg border border-slate-800 bg-slate-900 p-5 lg:col-span-2">
+          <h2 className="text-lg font-semibold">Starting Grid</h2>
+          <div className="mt-5">
+            {isRaceDataLoading ? (
+              <div className="rounded-lg border border-slate-800 bg-slate-950 p-5 text-slate-300">
+                Loading starting grid...
+              </div>
+            ) : raceDataError ? (
+              <div className="rounded-lg border border-red-900 bg-red-950/40 p-5 text-red-200">
+                {raceDataError}
+              </div>
+            ) : gridPositions.length > 0 ? (
+              <GridTable positions={gridPositions} />
+            ) : (
+              <div className="rounded-lg border border-slate-800 bg-slate-950 p-5 text-slate-300">
+                No starting grid available.
+              </div>
+            )}
+          </div>
+        </section>
+
+        <section className="rounded-lg border border-slate-800 bg-slate-900 p-5 lg:col-span-2">
+          <h2 className="text-lg font-semibold">Race Results</h2>
+          <div className="mt-5">
+            {isRaceDataLoading ? (
+              <div className="rounded-lg border border-slate-800 bg-slate-950 p-5 text-slate-300">
+                Loading race results...
+              </div>
+            ) : raceDataError ? (
+              <div className="rounded-lg border border-red-900 bg-red-950/40 p-5 text-red-200">
+                {raceDataError}
+              </div>
+            ) : raceResults.length > 0 ? (
+              <RaceResultsTable results={raceResults} />
+            ) : (
+              <div className="rounded-lg border border-slate-800 bg-slate-950 p-5 text-slate-300">
+                No race results available.
               </div>
             )}
           </div>
