@@ -13,8 +13,18 @@ async def get_qualifying() -> list[QualifyingResult]:
 
 
 async def get_grid() -> list[GridPosition]:
-    data = await _fetch_jolpica_data("/current/last/grid")
-    grid_positions = _extract_results(data, "GridPositions")
+    try:
+        data = await _fetch_jolpica_data("/current/last/grid")
+        grid_positions = _extract_results(data, "GridPositions")
+    except httpx.HTTPStatusError as exc:
+        if exc.response.status_code != 400:
+            raise
+
+        data = await _fetch_jolpica_data("/current/last/results")
+        grid_positions = sorted(
+            _extract_results(data, "Results"),
+            key=lambda result: _to_int(result.get("grid")),
+        )
 
     return [_map_grid_position(position) for position in grid_positions]
 
@@ -27,7 +37,7 @@ async def get_race_results() -> list[RaceResult]:
 
 
 async def _fetch_jolpica_data(path: str) -> dict:
-    async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient(follow_redirects=True) as client:
         response = await client.get(f"{JOLPICA_BASE_URL}{path}")
         response.raise_for_status()
 
@@ -60,7 +70,7 @@ def _map_qualifying_result(result: dict) -> QualifyingResult:
 
 def _map_grid_position(position: dict) -> GridPosition:
     return GridPosition(
-        position=_to_int(position.get("position")),
+        position=_to_int(position.get("grid", position.get("position"))),
         driver=_map_driver_name(position),
         team=_map_team_name(position),
     )
@@ -92,5 +102,3 @@ def _to_int(value: str | int | None) -> int:
         return 0
 
     return int(value)
-
-

@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
@@ -12,6 +13,9 @@
     "react-router-dom": "latest"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "latest",
+    "@types/react": "^19.2.15",
+    "@types/react-dom": "^19.2.3",
     "autoprefixer": "latest",
     "postcss": "latest",
     "tailwindcss": "latest",
