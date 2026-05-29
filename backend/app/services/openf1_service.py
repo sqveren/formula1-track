@@ -7,7 +7,7 @@ from app.schemas.race import RaceWeekend, Session
 OPENF1_SESSIONS_URL = "https://api.openf1.org/v1/sessions?session_key=latest"
 
 
-async def get_latest_race_weekend() -> RaceWeekend:
+async def get_latest_weekend() -> RaceWeekend:
     async with httpx.AsyncClient() as client:
         response = await client.get(OPENF1_SESSIONS_URL)
         response.raise_for_status()
@@ -52,4 +52,3 @@ def _parse_date_start(date_start: str) -> datetime | None:
 
 def _build_grand_prix_name(country: str) -> str:
     return f"{country} Grand Prix" if country else ""
-
