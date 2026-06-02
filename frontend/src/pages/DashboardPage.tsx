@@ -1,15 +1,21 @@
 import { useEffect, useState } from "react";
 
+import ConstructorStandingsTable from "../components/ConstructorStandingsTable";
+import DriverStandingsTable from "../components/DriverStandingsTable";
 import GridTable from "../components/GridTable";
 import QualifyingTable from "../components/QualifyingTable";
 import RaceResultsTable from "../components/RaceResultsTable";
 import RaceWeekendCard from "../components/RaceWeekendCard";
 import SessionCard from "../components/SessionCard";
 import {
+  getConstructorStandings,
+  getDriverStandings,
   getGrid,
   getQualifying,
   getResults,
   getWeekend,
+  type ConstructorStanding,
+  type DriverStanding,
   type GridPosition,
   type QualifyingResult,
   type RaceResult,
@@ -30,6 +36,17 @@ function DashboardPage() {
   const [raceResults, setRaceResults] = useState<RaceResult[]>([]);
   const [isRecentLoading, setIsRecentLoading] = useState(true);
   const [recentError, setRecentError] = useState<string | null>(null);
+  const [driverStandings, setDriverStandings] = useState<DriverStanding[]>([]);
+  const [constructorStandings, setConstructorStandings] = useState<
+    ConstructorStanding[]
+  >([]);
+  const [isStandingsLoading, setIsStandingsLoading] = useState(true);
+  const [driverStandingsError, setDriverStandingsError] = useState<
+    string | null
+  >(null);
+  const [constructorStandingsError, setConstructorStandingsError] = useState<
+    string | null
+  >(null);
 
   useEffect(() => {
     let isActive = true;
@@ -55,6 +72,45 @@ function DashboardPage() {
     }
 
     loadWeekend();
+
+    return () => {
+      isActive = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let isActive = true;
+
+    async function loadStandings() {
+      setIsStandingsLoading(true);
+      setDriverStandingsError(null);
+      setConstructorStandingsError(null);
+
+      const [driverResult, constructorResult] = await Promise.allSettled([
+        getDriverStandings(),
+        getConstructorStandings(),
+      ]);
+
+      if (!isActive) {
+        return;
+      }
+
+      if (driverResult.status === "fulfilled") {
+        setDriverStandings(driverResult.value);
+      } else {
+        setDriverStandingsError("Unable to load driver standings.");
+      }
+
+      if (constructorResult.status === "fulfilled") {
+        setConstructorStandings(constructorResult.value);
+      } else {
+        setConstructorStandingsError("Unable to load constructor standings.");
+      }
+
+      setIsStandingsLoading(false);
+    }
+
+    loadStandings();
 
     return () => {
       isActive = false;
@@ -262,16 +318,46 @@ function DashboardPage() {
         {activeTab === "standings" ? (
           <div className="mt-6 grid gap-6 lg:grid-cols-2">
             <section className="rounded-lg border border-slate-800 bg-slate-900 p-5">
-              <h2 className="text-lg font-semibold">Driver Standings</h2>
-              <div className="mt-5 rounded-lg border border-slate-800 bg-slate-950 p-5 text-slate-300">
-                Coming soon
+              <h2 className="text-lg font-semibold">Driver Championship</h2>
+              <div className="mt-5">
+                {isStandingsLoading ? (
+                  <div className="rounded-lg border border-slate-800 bg-slate-950 p-5 text-slate-300">
+                    Loading driver standings...
+                  </div>
+                ) : driverStandingsError ? (
+                  <div className="rounded-lg border border-red-900 bg-red-950/40 p-5 text-red-200">
+                    {driverStandingsError}
+                  </div>
+                ) : driverStandings.length > 0 ? (
+                  <DriverStandingsTable standings={driverStandings} />
+                ) : (
+                  <div className="rounded-lg border border-slate-800 bg-slate-950 p-5 text-slate-300">
+                    No driver standings available.
+                  </div>
+                )}
               </div>
             </section>
 
             <section className="rounded-lg border border-slate-800 bg-slate-900 p-5">
-              <h2 className="text-lg font-semibold">Constructor Standings</h2>
-              <div className="mt-5 rounded-lg border border-slate-800 bg-slate-950 p-5 text-slate-300">
-                Coming soon
+              <h2 className="text-lg font-semibold">
+                Constructor Championship
+              </h2>
+              <div className="mt-5">
+                {isStandingsLoading ? (
+                  <div className="rounded-lg border border-slate-800 bg-slate-950 p-5 text-slate-300">
+                    Loading constructor standings...
+                  </div>
+                ) : constructorStandingsError ? (
+                  <div className="rounded-lg border border-red-900 bg-red-950/40 p-5 text-red-200">
+                    {constructorStandingsError}
+                  </div>
+                ) : constructorStandings.length > 0 ? (
+                  <ConstructorStandingsTable standings={constructorStandings} />
+                ) : (
+                  <div className="rounded-lg border border-slate-800 bg-slate-950 p-5 text-slate-300">
+                    No constructor standings available.
+                  </div>
+                )}
               </div>
             </section>
           </div>

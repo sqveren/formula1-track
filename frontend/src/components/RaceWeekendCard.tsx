@@ -5,7 +5,9 @@ interface RaceWeekendCardProps {
 }
 
 function RaceWeekendCard({ weekend }: RaceWeekendCardProps) {
-  const nextSession = weekend.sessions[0];
+  const raceSession =
+    weekend.sessions.find((session) => session.name === "Race") ??
+    weekend.sessions[0];
 
   return (
     <article className="rounded-lg border border-slate-800 bg-slate-950 p-5">
@@ -23,14 +25,14 @@ function RaceWeekendCard({ weekend }: RaceWeekendCardProps) {
           <dt className="text-sm font-medium text-slate-400">Country</dt>
           <dd className="mt-1 text-base text-slate-100">{weekend.country}</dd>
         </div>
-        {nextSession ? (
-          <div>
-            <dt className="text-sm font-medium text-slate-400">Date/time</dt>
-            <dd className="mt-1 text-base text-slate-100">
-              {nextSession.date} {nextSession.startTime}
-            </dd>
-          </div>
-        ) : null}
+        <div>
+          <dt className="text-sm font-medium text-slate-400">Date/time</dt>
+          <dd className="mt-1 text-base text-slate-100">
+            {raceSession
+              ? `${raceSession.date} ${raceSession.startTime}`
+              : "Not available yet"}
+          </dd>
+        </div>
       </dl>
     </article>
   );

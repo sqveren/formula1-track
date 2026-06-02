@@ -1,6 +1,8 @@
 import axios from "axios";
 
 import type {
+  ConstructorStanding,
+  DriverStanding,
   GridPosition,
   QualifyingResult,
   RaceResult,
@@ -8,6 +10,8 @@ import type {
 } from "../types/f1";
 
 export type {
+  ConstructorStanding,
+  DriverStanding,
   GridPosition,
   QualifyingResult,
   RaceResult,
@@ -41,5 +45,20 @@ export async function getGrid(): Promise<GridPosition[]> {
 
 export async function getResults(): Promise<RaceResult[]> {
   const response = await apiClient.get<ApiResponse<RaceResult[]>>("/results");
+  return response.data.data;
+}
+
+export async function getDriverStandings(): Promise<DriverStanding[]> {
+  const response =
+    await apiClient.get<ApiResponse<DriverStanding[]>>("/driver-standings");
+  return response.data.data;
+}
+
+export async function getConstructorStandings(): Promise<
+  ConstructorStanding[]
+> {
+  const response = await apiClient.get<ApiResponse<ConstructorStanding[]>>(
+    "/constructor-standings",
+  );
   return response.data.data;
 }

@@ -1,4 +1,6 @@
 from app.schemas.race import (
+    ConstructorStanding,
+    DriverStanding,
     GridPosition,
     QualifyingResult,
     RaceResult,
@@ -7,10 +9,11 @@ from app.schemas.race import (
 )
 
 __all__ = [
+    "ConstructorStanding",
+    "DriverStanding",
     "GridPosition",
     "QualifyingResult",
     "RaceResult",
     "RaceWeekend",
     "Session",
 ]
-

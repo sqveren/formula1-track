@@ -45,3 +45,21 @@ class RaceResult(BaseModel):
     team: str
     points: float
 
+
+class DriverStanding(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    position: int
+    driver: str
+    team: str
+    points: float
+    wins: int
+
+
+class ConstructorStanding(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    position: int
+    team: str
+    points: float
+    wins: int

@@ -32,3 +32,18 @@ export interface RaceResult {
   team: string;
   points: number;
 }
+
+export interface DriverStanding {
+  position: number;
+  driver: string;
+  team: string;
+  points: number;
+  wins: number;
+}
+
+export interface ConstructorStanding {
+  position: number;
+  team: string;
+  points: number;
+  wins: number;
+}

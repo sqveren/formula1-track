@@ -1,13 +1,13 @@
 from fastapi import APIRouter
 
-from app.services import jolpica_service, openf1_service
+from app.services import jolpica_service
 
 router = APIRouter()
 
 
 @router.get("/weekend")
 async def get_weekend() -> dict:
-    weekend = await openf1_service.get_latest_weekend()
+    weekend = await jolpica_service.get_upcoming_weekend()
     return {"data": weekend.model_dump()}
 
 
@@ -27,3 +27,15 @@ async def get_grid() -> dict:
 async def get_results() -> dict:
     results = await jolpica_service.get_race_results()
     return {"data": [result.model_dump() for result in results]}
+
+
+@router.get("/driver-standings")
+async def get_driver_standings() -> dict:
+    standings = await jolpica_service.get_driver_standings()
+    return {"data": [standing.model_dump() for standing in standings]}
+
+
+@router.get("/constructor-standings")
+async def get_constructor_standings() -> dict:
+    standings = await jolpica_service.get_constructor_standings()
+    return {"data": [standing.model_dump() for standing in standings]}
