@@ -11,6 +11,12 @@ async def get_weekend() -> dict:
     return {"data": weekend.model_dump()}
 
 
+@router.get("/calendar")
+async def get_calendar() -> dict:
+    calendar = await jolpica_service.get_calendar()
+    return {"data": [race.model_dump() for race in calendar]}
+
+
 @router.get("/qualifying")
 async def get_qualifying() -> dict:
     qualifying = await jolpica_service.get_qualifying()
@@ -39,3 +45,15 @@ async def get_driver_standings() -> dict:
 async def get_constructor_standings() -> dict:
     standings = await jolpica_service.get_constructor_standings()
     return {"data": [standing.model_dump() for standing in standings]}
+
+
+@router.get("/driver/{driver_id}")
+async def get_driver_details(driver_id: str) -> dict:
+    details = await jolpica_service.get_driver_details(driver_id)
+    return {"data": details.model_dump()}
+
+
+@router.get("/team/{constructor_id}")
+async def get_team_details(constructor_id: str) -> dict:
+    details = await jolpica_service.get_team_details(constructor_id)
+    return {"data": details.model_dump()}

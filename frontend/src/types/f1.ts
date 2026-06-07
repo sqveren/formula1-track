@@ -11,8 +11,19 @@ export interface RaceWeekend {
   sessions: Session[];
 }
 
+export interface RaceCalendarItem {
+  round: number;
+  grandPrixName: string;
+  circuitName: string;
+  country: string;
+  raceDate: string;
+  sessions: Session[];
+}
+
 export interface QualifyingResult {
   position: number;
+  driverId: string;
+  teamId: string;
   driver: string;
   team: string;
   q1: string;
@@ -22,12 +33,16 @@ export interface QualifyingResult {
 
 export interface GridPosition {
   position: number;
+  driverId: string;
+  teamId: string;
   driver: string;
   team: string;
 }
 
 export interface RaceResult {
   position: number;
+  driverId: string;
+  teamId: string;
   driver: string;
   team: string;
   points: number;
@@ -35,6 +50,8 @@ export interface RaceResult {
 
 export interface DriverStanding {
   position: number;
+  driverId: string;
+  teamId: string;
   driver: string;
   team: string;
   points: number;
@@ -43,7 +60,30 @@ export interface DriverStanding {
 
 export interface ConstructorStanding {
   position: number;
+  teamId: string;
   team: string;
   points: number;
   wins: number;
+}
+
+export interface DriverDetails {
+  driverId: string;
+  driver: string;
+  team: string;
+  championshipPosition: number;
+  points: number;
+  wins: number;
+  latestResult: string;
+  nationality: string;
+  seasonInformation: string;
+}
+
+export interface TeamDetails {
+  teamId: string;
+  team: string;
+  championshipPosition: number;
+  points: number;
+  wins: number;
+  drivers: string[];
+  latestResults: string[];
 }

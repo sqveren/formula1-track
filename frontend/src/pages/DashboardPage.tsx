@@ -2,13 +2,18 @@ import { useEffect, useState } from "react";
 
 import ConstructorStandingsTable from "../components/ConstructorStandingsTable";
 import DriverStandingsTable from "../components/DriverStandingsTable";
+import DriverDetailsModal from "../components/DriverDetailsModal";
 import GridTable from "../components/GridTable";
 import QualifyingTable from "../components/QualifyingTable";
+import RaceCalendarCard from "../components/RaceCalendarCard";
+import RaceCalendarModal from "../components/RaceCalendarModal";
 import RaceResultsTable from "../components/RaceResultsTable";
 import RaceWeekendCard from "../components/RaceWeekendCard";
 import SessionCard from "../components/SessionCard";
+import TeamDetailsModal from "../components/TeamDetailsModal";
 import {
   getConstructorStandings,
+  getCalendar,
   getDriverStandings,
   getGrid,
   getQualifying,
@@ -18,6 +23,7 @@ import {
   type DriverStanding,
   type GridPosition,
   type QualifyingResult,
+  type RaceCalendarItem,
   type RaceResult,
   type RaceWeekend,
 } from "../services/api";
@@ -29,6 +35,14 @@ function DashboardPage() {
   const [weekend, setWeekend] = useState<RaceWeekend | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [calendar, setCalendar] = useState<RaceCalendarItem[]>([]);
+  const [isCalendarLoading, setIsCalendarLoading] = useState(true);
+  const [calendarError, setCalendarError] = useState<string | null>(null);
+  const [selectedRace, setSelectedRace] = useState<RaceCalendarItem | null>(
+    null,
+  );
+  const [selectedDriverId, setSelectedDriverId] = useState<string | null>(null);
+  const [selectedTeamId, setSelectedTeamId] = useState<string | null>(null);
   const [qualifyingResults, setQualifyingResults] = useState<
     QualifyingResult[]
   >([]);
@@ -72,6 +86,36 @@ function DashboardPage() {
     }
 
     loadWeekend();
+
+    return () => {
+      isActive = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let isActive = true;
+
+    async function loadCalendar() {
+      try {
+        setIsCalendarLoading(true);
+        setCalendarError(null);
+        const calendarData = await getCalendar();
+
+        if (isActive) {
+          setCalendar(calendarData);
+        }
+      } catch {
+        if (isActive) {
+          setCalendarError("Unable to load season calendar.");
+        }
+      } finally {
+        if (isActive) {
+          setIsCalendarLoading(false);
+        }
+      }
+    }
+
+    loadCalendar();
 
     return () => {
       isActive = false;
@@ -248,6 +292,38 @@ function DashboardPage() {
                 )}
               </div>
             </section>
+
+            <section className="rounded-lg border border-slate-800 bg-slate-900 p-5 lg:col-span-2">
+              <h2 className="text-lg font-semibold">Season Calendar</h2>
+              <h3 className="mt-5 text-base font-semibold text-white">
+                All Race Weekends
+              </h3>
+              <div className="mt-3">
+                {isCalendarLoading ? (
+                  <div className="rounded-lg border border-slate-800 bg-slate-950 p-5 text-slate-300">
+                    Loading season calendar...
+                  </div>
+                ) : calendarError ? (
+                  <div className="rounded-lg border border-red-900 bg-red-950/40 p-5 text-red-200">
+                    {calendarError}
+                  </div>
+                ) : calendar.length > 0 ? (
+                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    {calendar.map((race) => (
+                      <RaceCalendarCard
+                        key={race.round}
+                        race={race}
+                        onSelect={setSelectedRace}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="rounded-lg border border-slate-800 bg-slate-950 p-5 text-slate-300">
+                    No race weekends available.
+                  </div>
+                )}
+              </div>
+            </section>
           </div>
         ) : null}
 
@@ -271,7 +347,11 @@ function DashboardPage() {
                     </h3>
                     <div className="mt-3">
                       {qualifyingResults.length > 0 ? (
-                        <QualifyingTable results={qualifyingResults} />
+                        <QualifyingTable
+                          results={qualifyingResults}
+                          onDriverSelect={setSelectedDriverId}
+                          onTeamSelect={setSelectedTeamId}
+                        />
                       ) : (
                         <div className="rounded-lg border border-slate-800 bg-slate-950 p-5 text-slate-300">
                           No qualifying results available.
@@ -286,7 +366,11 @@ function DashboardPage() {
                     </h3>
                     <div className="mt-3">
                       {gridPositions.length > 0 ? (
-                        <GridTable positions={gridPositions} />
+                        <GridTable
+                          positions={gridPositions}
+                          onDriverSelect={setSelectedDriverId}
+                          onTeamSelect={setSelectedTeamId}
+                        />
                       ) : (
                         <div className="rounded-lg border border-slate-800 bg-slate-950 p-5 text-slate-300">
                           No grid positions available.
@@ -301,7 +385,11 @@ function DashboardPage() {
                     </h3>
                     <div className="mt-3">
                       {raceResults.length > 0 ? (
-                        <RaceResultsTable results={raceResults} />
+                        <RaceResultsTable
+                          results={raceResults}
+                          onDriverSelect={setSelectedDriverId}
+                          onTeamSelect={setSelectedTeamId}
+                        />
                       ) : (
                         <div className="rounded-lg border border-slate-800 bg-slate-950 p-5 text-slate-300">
                           No race results available.
@@ -329,7 +417,11 @@ function DashboardPage() {
                     {driverStandingsError}
                   </div>
                 ) : driverStandings.length > 0 ? (
-                  <DriverStandingsTable standings={driverStandings} />
+                  <DriverStandingsTable
+                    standings={driverStandings}
+                    onDriverSelect={setSelectedDriverId}
+                    onTeamSelect={setSelectedTeamId}
+                  />
                 ) : (
                   <div className="rounded-lg border border-slate-800 bg-slate-950 p-5 text-slate-300">
                     No driver standings available.
@@ -352,7 +444,10 @@ function DashboardPage() {
                     {constructorStandingsError}
                   </div>
                 ) : constructorStandings.length > 0 ? (
-                  <ConstructorStandingsTable standings={constructorStandings} />
+                  <ConstructorStandingsTable
+                    standings={constructorStandings}
+                    onTeamSelect={setSelectedTeamId}
+                  />
                 ) : (
                   <div className="rounded-lg border border-slate-800 bg-slate-950 p-5 text-slate-300">
                     No constructor standings available.
@@ -362,6 +457,22 @@ function DashboardPage() {
             </section>
           </div>
         ) : null}
+
+        <RaceCalendarModal
+          isOpen={selectedRace !== null}
+          onClose={() => setSelectedRace(null)}
+          race={selectedRace}
+        />
+        <DriverDetailsModal
+          isOpen={selectedDriverId !== null}
+          onClose={() => setSelectedDriverId(null)}
+          driverId={selectedDriverId}
+        />
+        <TeamDetailsModal
+          isOpen={selectedTeamId !== null}
+          onClose={() => setSelectedTeamId(null)}
+          teamId={selectedTeamId}
+        />
       </div>
     </main>
   );

@@ -2,21 +2,27 @@ import axios from "axios";
 
 import type {
   ConstructorStanding,
+  DriverDetails,
   DriverStanding,
   GridPosition,
   QualifyingResult,
+  RaceCalendarItem,
   RaceResult,
   RaceWeekend,
+  TeamDetails,
 } from "../types/f1";
 
 export type {
   ConstructorStanding,
+  DriverDetails,
   DriverStanding,
   GridPosition,
   QualifyingResult,
+  RaceCalendarItem,
   RaceResult,
   RaceWeekend,
   Session,
+  TeamDetails,
 } from "../types/f1";
 
 interface ApiResponse<T> {
@@ -29,6 +35,13 @@ export const apiClient = axios.create({
 
 export async function getWeekend(): Promise<RaceWeekend> {
   const response = await apiClient.get<ApiResponse<RaceWeekend>>("/weekend");
+  return response.data.data;
+}
+
+export async function getCalendar(): Promise<RaceCalendarItem[]> {
+  const response = await apiClient.get<ApiResponse<RaceCalendarItem[]>>(
+    "/calendar",
+  );
   return response.data.data;
 }
 
@@ -59,6 +72,20 @@ export async function getConstructorStandings(): Promise<
 > {
   const response = await apiClient.get<ApiResponse<ConstructorStanding[]>>(
     "/constructor-standings",
+  );
+  return response.data.data;
+}
+
+export async function getDriverDetails(driverId: string): Promise<DriverDetails> {
+  const response = await apiClient.get<ApiResponse<DriverDetails>>(
+    `/driver/${driverId}`,
+  );
+  return response.data.data;
+}
+
+export async function getTeamDetails(teamId: string): Promise<TeamDetails> {
+  const response = await apiClient.get<ApiResponse<TeamDetails>>(
+    `/team/${teamId}`,
   );
   return response.data.data;
 }
