@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from app.services import jolpica_service
+from app.services import driver_analytics_service, jolpica_service
 
 router = APIRouter()
 
@@ -51,6 +51,12 @@ async def get_constructor_standings() -> dict:
 async def get_driver_details(driver_id: str) -> dict:
     details = await jolpica_service.get_driver_details(driver_id)
     return {"data": details.model_dump()}
+
+
+@router.get("/driver/{driver_id}/analytics")
+async def get_driver_analytics(driver_id: str) -> dict:
+    analytics = await driver_analytics_service.get_driver_analytics(driver_id)
+    return {"data": analytics.model_dump()}
 
 
 @router.get("/team/{constructor_id}")

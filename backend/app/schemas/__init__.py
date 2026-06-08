@@ -1,5 +1,6 @@
 from app.schemas.race import (
     ConstructorStanding,
+    DriverAnalytics,
     DriverDetails,
     DriverStanding,
     GridPosition,
@@ -13,6 +14,7 @@ from app.schemas.race import (
 
 __all__ = [
     "ConstructorStanding",
+    "DriverAnalytics",
     "DriverDetails",
     "DriverStanding",
     "GridPosition",

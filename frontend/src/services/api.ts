@@ -2,6 +2,7 @@ import axios from "axios";
 
 import type {
   ConstructorStanding,
+  DriverAnalytics,
   DriverDetails,
   DriverStanding,
   GridPosition,
@@ -14,6 +15,7 @@ import type {
 
 export type {
   ConstructorStanding,
+  DriverAnalytics,
   DriverDetails,
   DriverStanding,
   GridPosition,
@@ -79,6 +81,15 @@ export async function getConstructorStandings(): Promise<
 export async function getDriverDetails(driverId: string): Promise<DriverDetails> {
   const response = await apiClient.get<ApiResponse<DriverDetails>>(
     `/driver/${driverId}`,
+  );
+  return response.data.data;
+}
+
+export async function getDriverAnalytics(
+  driverId: string,
+): Promise<DriverAnalytics> {
+  const response = await apiClient.get<ApiResponse<DriverAnalytics>>(
+    `/driver/${driverId}/analytics`,
   );
   return response.data.data;
 }

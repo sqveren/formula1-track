@@ -78,6 +78,20 @@ export interface DriverDetails {
   seasonInformation: string;
 }
 
+export interface DriverAnalytics {
+  driverId: string;
+  driver: string;
+  team: string;
+  average_grid_position: number;
+  average_finish_position: number;
+  qualifying_race_delta: number;
+  consistency: number;
+  dnfs: number;
+  points_per_race: number;
+  podiums: number;
+  form: string[];
+}
+
 export interface TeamDetails {
   teamId: string;
   team: string;

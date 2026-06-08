@@ -99,6 +99,22 @@ class DriverDetails(BaseModel):
     seasonInformation: str
 
 
+class DriverAnalytics(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    driverId: str
+    driver: str
+    team: str
+    average_grid_position: float
+    average_finish_position: float
+    qualifying_race_delta: float
+    consistency: float
+    dnfs: int
+    points_per_race: float
+    podiums: int
+    form: list[str]
+
+
 class TeamDetails(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
