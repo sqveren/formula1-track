@@ -1,6 +1,11 @@
 from fastapi import APIRouter
 
-from app.services import driver_analytics_service, jolpica_service
+from app.services import (
+    circuit_service,
+    driver_analytics_service,
+    jolpica_service,
+    race_insights_service,
+)
 
 router = APIRouter()
 
@@ -15,6 +20,18 @@ async def get_weekend() -> dict:
 async def get_calendar() -> dict:
     calendar = await jolpica_service.get_calendar()
     return {"data": [race.model_dump() for race in calendar]}
+
+
+@router.get("/circuits")
+async def get_circuits() -> dict:
+    circuits = await circuit_service.get_circuits()
+    return {"data": [circuit.model_dump() for circuit in circuits]}
+
+
+@router.get("/circuits/{circuit_name}")
+async def get_circuit(circuit_name: str) -> dict:
+    circuit = await circuit_service.get_circuit(circuit_name)
+    return {"data": circuit.model_dump()}
 
 
 @router.get("/qualifying")
@@ -33,6 +50,12 @@ async def get_grid() -> dict:
 async def get_results() -> dict:
     results = await jolpica_service.get_race_results()
     return {"data": [result.model_dump() for result in results]}
+
+
+@router.get("/race-insights")
+async def get_race_insights() -> dict:
+    insights = await race_insights_service.get_latest_race_insights()
+    return {"data": insights.model_dump()}
 
 
 @router.get("/driver-standings")

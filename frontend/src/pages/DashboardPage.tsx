@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 
+import CircuitExplorer from "../components/CircuitExplorer";
 import ConstructorStandingsTable from "../components/ConstructorStandingsTable";
+import DriverComparison from "../components/DriverComparison";
 import DriverStandingsTable from "../components/DriverStandingsTable";
 import DriverDetailsModal from "../components/DriverDetailsModal";
 import GridTable from "../components/GridTable";
 import QualifyingTable from "../components/QualifyingTable";
 import RaceCalendarCard from "../components/RaceCalendarCard";
 import RaceCalendarModal from "../components/RaceCalendarModal";
+import RaceInsightCard from "../components/RaceInsightCard";
 import RaceResultsTable from "../components/RaceResultsTable";
 import RaceWeekendCard from "../components/RaceWeekendCard";
 import SessionCard from "../components/SessionCard";
@@ -28,7 +31,7 @@ import {
   type RaceWeekend,
 } from "../services/api";
 
-type DashboardTab = "upcoming" | "recent" | "standings";
+type DashboardTab = "upcoming" | "recent" | "standings" | "explorer";
 
 function DashboardPage() {
   const [activeTab, setActiveTab] = useState<DashboardTab>("upcoming");
@@ -241,6 +244,17 @@ function DashboardPage() {
             }`}
           >
             Standings
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab("explorer")}
+            className={`rounded-md px-4 py-2 text-sm font-medium ${
+              activeTab === "explorer"
+                ? "bg-slate-100 text-slate-950"
+                : "bg-slate-900 text-slate-300 hover:bg-slate-800"
+            }`}
+          >
+            Explorer
           </button>
         </div>
 
@@ -455,6 +469,24 @@ function DashboardPage() {
                 )}
               </div>
             </section>
+          </div>
+        ) : null}
+
+        {activeTab === "explorer" ? (
+          <div className="mt-6 grid gap-6">
+            {isStandingsLoading ? (
+              <div className="rounded-lg border border-slate-800 bg-slate-900 p-5 text-slate-300">
+                Loading driver data...
+              </div>
+            ) : driverStandingsError ? (
+              <div className="rounded-lg border border-red-900 bg-red-950/40 p-5 text-red-200">
+                {driverStandingsError}
+              </div>
+            ) : (
+              <DriverComparison drivers={driverStandings} />
+            )}
+            <RaceInsightCard />
+            <CircuitExplorer />
           </div>
         ) : null}
 

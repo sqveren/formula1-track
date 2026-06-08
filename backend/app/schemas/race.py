@@ -115,6 +115,37 @@ class DriverAnalytics(BaseModel):
     form: list[str]
 
 
+class Circuit(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    round: int
+    grandPrixName: str
+    circuitName: str
+    country: str
+    raceDate: str
+    trackLength: str
+    numberOfLaps: int
+    raceDistance: str
+    firstGrandPrixYear: int
+
+
+class RaceInsight(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    driver: str
+    startingPosition: int
+    finishingPosition: int
+    positionsGained: int
+
+
+class RaceInsights(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    raceName: str
+    biggestGainer: RaceInsight
+    biggestLoser: RaceInsight
+
+
 class TeamDetails(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 

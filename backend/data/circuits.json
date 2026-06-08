@@ -1,0 +1,156 @@
+[
+  {
+    "circuitName": "Albert Park Grand Prix Circuit",
+    "trackLength": "5.278 km",
+    "numberOfLaps": 58,
+    "raceDistance": "306.124 km",
+    "firstGrandPrixYear": 1996
+  },
+  {
+    "circuitName": "Shanghai International Circuit",
+    "trackLength": "5.451 km",
+    "numberOfLaps": 56,
+    "raceDistance": "305.066 km",
+    "firstGrandPrixYear": 2004
+  },
+  {
+    "circuitName": "Suzuka Circuit",
+    "trackLength": "5.807 km",
+    "numberOfLaps": 53,
+    "raceDistance": "307.471 km",
+    "firstGrandPrixYear": 1987
+  },
+  {
+    "circuitName": "Miami International Autodrome",
+    "trackLength": "5.412 km",
+    "numberOfLaps": 57,
+    "raceDistance": "308.326 km",
+    "firstGrandPrixYear": 2022
+  },
+  {
+    "circuitName": "Circuit Gilles Villeneuve",
+    "trackLength": "4.361 km",
+    "numberOfLaps": 70,
+    "raceDistance": "305.270 km",
+    "firstGrandPrixYear": 1978
+  },
+  {
+    "circuitName": "Circuit de Monaco",
+    "trackLength": "3.337 km",
+    "numberOfLaps": 78,
+    "raceDistance": "260.286 km",
+    "firstGrandPrixYear": 1950
+  },
+  {
+    "circuitName": "Circuit de Barcelona-Catalunya",
+    "trackLength": "4.657 km",
+    "numberOfLaps": 66,
+    "raceDistance": "307.236 km",
+    "firstGrandPrixYear": 1991
+  },
+  {
+    "circuitName": "Red Bull Ring",
+    "trackLength": "4.318 km",
+    "numberOfLaps": 71,
+    "raceDistance": "306.452 km",
+    "firstGrandPrixYear": 1970
+  },
+  {
+    "circuitName": "Silverstone Circuit",
+    "trackLength": "5.891 km",
+    "numberOfLaps": 52,
+    "raceDistance": "306.198 km",
+    "firstGrandPrixYear": 1950
+  },
+  {
+    "circuitName": "Circuit de Spa-Francorchamps",
+    "trackLength": "7.004 km",
+    "numberOfLaps": 44,
+    "raceDistance": "308.052 km",
+    "firstGrandPrixYear": 1950
+  },
+  {
+    "circuitName": "Hungaroring",
+    "trackLength": "4.381 km",
+    "numberOfLaps": 70,
+    "raceDistance": "306.630 km",
+    "firstGrandPrixYear": 1986
+  },
+  {
+    "circuitName": "Circuit Park Zandvoort",
+    "trackLength": "4.259 km",
+    "numberOfLaps": 72,
+    "raceDistance": "306.587 km",
+    "firstGrandPrixYear": 1952
+  },
+  {
+    "circuitName": "Autodromo Nazionale di Monza",
+    "trackLength": "5.793 km",
+    "numberOfLaps": 53,
+    "raceDistance": "306.720 km",
+    "firstGrandPrixYear": 1950
+  },
+  {
+    "circuitName": "Madring",
+    "trackLength": "5.470 km",
+    "numberOfLaps": 57,
+    "raceDistance": "311.790 km",
+    "firstGrandPrixYear": 2026
+  },
+  {
+    "circuitName": "Baku City Circuit",
+    "trackLength": "6.003 km",
+    "numberOfLaps": 51,
+    "raceDistance": "306.049 km",
+    "firstGrandPrixYear": 2016
+  },
+  {
+    "circuitName": "Marina Bay Street Circuit",
+    "trackLength": "4.940 km",
+    "numberOfLaps": 62,
+    "raceDistance": "306.143 km",
+    "firstGrandPrixYear": 2008
+  },
+  {
+    "circuitName": "Circuit of the Americas",
+    "trackLength": "5.513 km",
+    "numberOfLaps": 56,
+    "raceDistance": "308.405 km",
+    "firstGrandPrixYear": 2012
+  },
+  {
+    "circuitName": "Autodromo Hermanos Rodriguez",
+    "trackLength": "4.304 km",
+    "numberOfLaps": 71,
+    "raceDistance": "305.354 km",
+    "firstGrandPrixYear": 1963
+  },
+  {
+    "circuitName": "Autodromo Jose Carlos Pace",
+    "trackLength": "4.309 km",
+    "numberOfLaps": 71,
+    "raceDistance": "305.879 km",
+    "firstGrandPrixYear": 1973
+  },
+  {
+    "circuitName": "Las Vegas Strip Street Circuit",
+    "trackLength": "6.201 km",
+    "numberOfLaps": 50,
+    "raceDistance": "309.958 km",
+    "firstGrandPrixYear": 2023
+  },
+  {
+    "circuitName": "Losail International Circuit",
+    "trackLength": "5.419 km",
+    "numberOfLaps": 57,
+    "raceDistance": "308.611 km",
+    "firstGrandPrixYear": 2021
+  },
+  {
+    "circuitName": "Yas Marina Circuit",
+    "trackLength": "5.281 km",
+    "numberOfLaps": 58,
+    "raceDistance": "306.183 km",
+    "firstGrandPrixYear": 2009
+  }
+]

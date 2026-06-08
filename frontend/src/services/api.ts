@@ -1,6 +1,7 @@
 import axios from "axios";
 
 import type {
+  Circuit,
   ConstructorStanding,
   DriverAnalytics,
   DriverDetails,
@@ -8,12 +9,15 @@ import type {
   GridPosition,
   QualifyingResult,
   RaceCalendarItem,
+  RaceInsight,
+  RaceInsights,
   RaceResult,
   RaceWeekend,
   TeamDetails,
 } from "../types/f1";
 
 export type {
+  Circuit,
   ConstructorStanding,
   DriverAnalytics,
   DriverDetails,
@@ -21,6 +25,8 @@ export type {
   GridPosition,
   QualifyingResult,
   RaceCalendarItem,
+  RaceInsight,
+  RaceInsights,
   RaceResult,
   RaceWeekend,
   Session,
@@ -43,6 +49,18 @@ export async function getWeekend(): Promise<RaceWeekend> {
 export async function getCalendar(): Promise<RaceCalendarItem[]> {
   const response = await apiClient.get<ApiResponse<RaceCalendarItem[]>>(
     "/calendar",
+  );
+  return response.data.data;
+}
+
+export async function getCircuits(): Promise<Circuit[]> {
+  const response = await apiClient.get<ApiResponse<Circuit[]>>("/circuits");
+  return response.data.data;
+}
+
+export async function getCircuit(circuitName: string): Promise<Circuit> {
+  const response = await apiClient.get<ApiResponse<Circuit>>(
+    `/circuits/${encodeURIComponent(circuitName)}`,
   );
   return response.data.data;
 }
@@ -75,6 +93,12 @@ export async function getConstructorStandings(): Promise<
   const response = await apiClient.get<ApiResponse<ConstructorStanding[]>>(
     "/constructor-standings",
   );
+  return response.data.data;
+}
+
+export async function getRaceInsights(): Promise<RaceInsights> {
+  const response =
+    await apiClient.get<ApiResponse<RaceInsights>>("/race-insights");
   return response.data.data;
 }
 

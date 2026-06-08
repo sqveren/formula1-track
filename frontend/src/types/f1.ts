@@ -92,6 +92,31 @@ export interface DriverAnalytics {
   form: string[];
 }
 
+export interface Circuit {
+  round: number;
+  grandPrixName: string;
+  circuitName: string;
+  country: string;
+  raceDate: string;
+  trackLength: string;
+  numberOfLaps: number;
+  raceDistance: string;
+  firstGrandPrixYear: number;
+}
+
+export interface RaceInsight {
+  driver: string;
+  startingPosition: number;
+  finishingPosition: number;
+  positionsGained: number;
+}
+
+export interface RaceInsights {
+  raceName: string;
+  biggestGainer: RaceInsight;
+  biggestLoser: RaceInsight;
+}
+
 export interface TeamDetails {
   teamId: string;
   team: string;

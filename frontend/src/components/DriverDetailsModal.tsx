@@ -6,6 +6,7 @@ import {
   type DriverAnalytics,
   type DriverDetails,
 } from "../services/api";
+import { buildDriverRatings } from "../utils/driverRatings";
 import Modal from "./Modal";
 
 interface DriverDetailsModalProps {
@@ -168,7 +169,7 @@ function DriverDetailsModal({
                   FIFA Style Attributes
                 </p>
                 <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                  {buildDriverAttributes(analytics).map((attribute) => (
+                  {buildDriverRatings(analytics).map((attribute) => (
                     <AttributeRow
                       key={attribute.label}
                       label={attribute.label}
@@ -208,16 +209,24 @@ function DriverDetailsModal({
                   Trend
                 </p>
                 {analytics.form.length > 0 ? (
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {analytics.form.map((result, index) => (
-                      <span
-                        key={`${result}-${index}`}
-                        className="rounded-md border border-slate-700 px-3 py-2 text-sm font-medium text-slate-100"
-                      >
-                        {result}
+                  <>
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {analytics.form.map((result, index) => (
+                        <span
+                          key={`${result}-${index}`}
+                          className="rounded-md border border-slate-700 px-3 py-2 text-sm font-medium text-slate-100"
+                        >
+                          {result}
+                        </span>
+                      ))}
+                    </div>
+                    <p className="mt-3 text-sm text-slate-300">
+                      Last 5 average finish:{" "}
+                      <span className="font-semibold text-slate-100">
+                        {getAverageFormFinish(analytics.form)}
                       </span>
-                    ))}
-                  </div>
+                    </p>
+                  </>
                 ) : (
                   <p className="mt-4 text-sm text-slate-300">
                     Not available yet
@@ -264,45 +273,17 @@ function AttributeRow({ label, value }: AttributeRowProps) {
   );
 }
 
-function buildDriverAttributes(analytics: DriverAnalytics) {
-  const averageQualifyingPosition =
-    analytics.average_finish_position + analytics.qualifying_race_delta;
-  const overtakingBase = 50 + analytics.qualifying_race_delta * 8;
+function getAverageFormFinish(form: string[]) {
+  const finishes = form
+    .map((result) => Number(result.replace("P", "")))
+    .filter((result) => Number.isFinite(result));
 
-  return [
-    {
-      label: "PACE",
-      value: scoreFromPosition(analytics.average_grid_position),
-    },
-    {
-      label: "QUALIFYING",
-      value: scoreFromPosition(averageQualifyingPosition),
-    },
-    {
-      label: "RACE CRAFT",
-      value: scoreFromPosition(analytics.average_finish_position),
-    },
-    {
-      label: "CONSISTENCY",
-      value: clampRating(100 - analytics.consistency * 12),
-    },
-    {
-      label: "OVERTAKING",
-      value: clampRating(overtakingBase),
-    },
-  ];
-}
-
-function scoreFromPosition(position: number) {
-  if (position <= 0) {
-    return 0;
+  if (!finishes.length) {
+    return "Not available yet";
   }
 
-  return clampRating(100 - (position - 1) * 4.5);
-}
-
-function clampRating(value: number) {
-  return Math.max(0, Math.min(100, Math.round(value)));
+  return (finishes.reduce((sum, result) => sum + result, 0) / finishes.length)
+    .toFixed(2);
 }
 
 export default DriverDetailsModal;
